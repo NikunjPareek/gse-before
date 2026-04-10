@@ -7,6 +7,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@xmldom/xmldom": "^0.9.9",
     "cors": "^2.8.5",
     "docxtemplater": "^3.45.0",
     "express": "^4.19.2",
