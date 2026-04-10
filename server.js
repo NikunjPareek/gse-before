@@ -40,12 +40,22 @@ function generateDocxBlob(type, data) {
   
   // Find <a:ln ... >
   xml = xml.replace(/<a:ln([^>]*)>/g, (match, attrs) => {
-    // If it has a w element, replace it, otherwise add it
     let newAttrs = attrs;
+    let isSelfClosing = false;
+
+    if (newAttrs.endsWith('/')) {
+        isSelfClosing = true;
+        newAttrs = newAttrs.slice(0, -1);
+    }
+
     if (/w="\d+"/.test(newAttrs)) {
         newAttrs = newAttrs.replace(/w="\d+"/, 'w="0"');
     } else {
         newAttrs += ' w="0"';
+    }
+
+    if (isSelfClosing) {
+        return `<a:ln${newAttrs}/>`;
     }
     return `<a:ln${newAttrs}>`;
   });
@@ -54,6 +64,9 @@ function generateDocxBlob(type, data) {
   // We can do this by just removing any <a:solidFill> that is immediately following <a:ln ...> or inside an a:ln block
   // A simple regex approach works for removing a:solidFill inside a:ln blocks
   xml = xml.replace(/<a:ln([^>]*)>([\s\S]*?)<\/a:ln>/g, (match, attrs, inner) => {
+      if (inner.includes('<a:ln')) {
+         return match;
+      }
       const fixedInner = inner.replace(/<a:solidFill[\s\S]*?<\/a:solidFill>/g, '').replace(/<a:solidFill[^>]*\/>/g, '');
       return `<a:ln${attrs}>${fixedInner}</a:ln>`;
   });
@@ -63,6 +76,7 @@ function generateDocxBlob(type, data) {
   const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
+      delimiters: { start: '{{', end: '}}' }
   });
 
   doc.render(data);
