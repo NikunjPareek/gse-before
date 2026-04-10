@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GSE Quotation Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400..900&family=Nunito+Sans:wght@300..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <div id="toast-container"></div>
+  
+  <header>
+    <div class="logo">GSE Quotation Generator</div>
+    <div class="status-indicator">
+      <div id="status-dot" class="dot idle"></div>
+      <span id="status-text">Ready</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="card type-selection">
+      <h2>Quotation Type</h2>
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="type" value="bank" checked>
+          <span>Bank</span>
+        </label>
+        <label>
+          <input type="radio" name="type" value="client">
+          <span>Client</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="split-layout">
+      <div class="card doc-details">
+        <h2>Document Details</h2>
+        <div class="form-group row">
+          <div>
+            <label for="ref_no">Reference Number</label>
+            <input type="text" id="ref_no" readonly>
+          </div>
+          <div>
+            <label for="date">Date</label>
+            <input type="date" id="date">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div>
+            <label for="kw">Capacity (kW)</label>
+            <input type="number" id="kw" placeholder="e.g. 5">
+          </div>
+          <div>
+            <label for="client_name">Client Name</label>
+            <input type="text" id="client_name" placeholder="Name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="client_address">Client Address</label>
+          <textarea id="client_address" rows="3" placeholder="Full address"></textarea>
+        </div>
+      </div>
+
+      <div class="card pricing-details">
+        <h2>Pricing & Calculations</h2>
+        <div class="form-group row">
+          <div>
+            <label for="base_cost">Base Cost (₹)</label>
+            <input type="number" id="base_cost" placeholder="0">
+          </div>
+          <div class="combined-input">
+            <label>GST (%)</label>
+            <div class="inner-row">
+              <input type="number" id="gst_pct" value="8.9" step="0.1">
+              <input type="text" id="gst_display" readonly>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <div>
+            <label for="central_subsidy">Central Subsidy (₹)</label>
+            <input type="number" id="central_subsidy" value="78000">
+          </div>
+          <div>
+            <label for="state_subsidy">State Subsidy (₹)</label>
+            <input type="number" id="state_subsidy" value="18000">
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <div>
+            <label for="total_subsidy">Total Subsidy (₹)</label>
+            <input type="text" id="total_subsidy" readonly>
+          </div>
+          <div id="discount-container" style="display: none;">
+            <label for="discount_amount">Discount (₹)</label>
+            <input type="number" id="discount_amount" placeholder="0">
+          </div>
+        </div>
+
+        <div class="final-box">
+          <label>Final Amount</label>
+          <input type="text" id="final_amount" readonly>
+          <input type="text" id="final_amount_words" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="card materials-details">
+      <h2>Material Components</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>S.No</th>
+              <th>Component</th>
+              <th>Specifications</th>
+              <th>Company / Make</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody id="materials-body">
+            <!-- 11 fixed rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="actions-bar">
+      <button id="clear-btn" class="btn-secondary">Clear Form</button>
+      <div class="primary-actions">
+        <button id="btn-doc" class="btn-primary">Download DOCX</button>
+        <button id="btn-pdf" class="btn-primary">Download PDF</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
