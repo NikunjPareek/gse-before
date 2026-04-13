@@ -1,15 +1,15 @@
 const tableDefaults = [
-    { component: 'PV Modules', spec: 'BIFICAL', company: 'Adani', qty: '10 Nos.' },
-    { component: 'Grid-Tie Inverter', spec: 'Capacity of X kW', company: 'K-Solar/UTL', qty: '01 Nos.' },
-    { component: 'Structure', spec: 'GP Paip (Apollo) Galvanized', company: 'Apollo 2mm', qty: 'As Requirement' },
-    { component: 'Meter', spec: 'Net Meter & Solar', company: 'Genius/L&T', qty: '1 set' },
-    { component: 'DC Wire', spec: '4 mm', company: 'Polycab', qty: 'As Requirement' },
-    { component: 'AC Wire', spec: 'As Requirement', company: 'Aluminium Armand', qty: 'As Requirement' },
-    { component: 'Earthing Wire', spec: '1 inch Strip', company: 'G.I', qty: 'As Requirement' },
-    { component: 'Earthing Material', spec: '2 Meter GI Earthing Roade+Chemical', company: 'As Per Standard', qty: '1 set' },
-    { component: 'Lighting Arrestor', spec: 'Requited Made', company: 'As Per Standard', qty: '01 Nos.' },
-    { component: 'Fitting', spec: 'As Requirement', company: 'As Per Standard', qty: 'As Requirement' },
-    { component: 'ACDB/DCDB', spec: 'As per standard', company: 'As Per Standard', qty: '1 set' }
+    { component: 'PV Modules',                              spec: 'BIFICAL',                              company: 'Adani',            qty: '10 No.'      },
+    { component: 'Grid-Tie Inverter',                        spec: 'Capacity of {{kw}} kW',                company: 'K-Solar/UTL',      qty: '1 Nos.'      },
+    { component: 'Structure',                                spec: 'GP Paip (Apollo) Galvanized',          company: 'Apollo 2mm',       qty: 'As Required' },
+    { component: 'Meter',                                    spec: 'Net Meter & Solar',                    company: 'Genius / L & T',   qty: '1 set'       },
+    { component: 'DC Wire',                                  spec: '4 mm',                                 company: 'Polycab',          qty: 'As Required' },
+    { component: 'AC Wire',                                  spec: 'As Required',                          company: 'Aluminium Armoured',qty: 'As Required' },
+    { component: 'Earthing Wire',                            spec: '1" Strip',                             company: 'GI',               qty: 'As Required' },
+    { component: 'Earthing Material',                        spec: '2 Meter GI Earthing Rod + Chemical',   company: 'As Per Standard',  qty: '1 Set'       },
+    { component: 'Lighting Arrestor',                        spec: 'As Required',                          company: 'As Per Standard',  qty: '1 No.'       },
+    { component: 'Fitting Accessories',                      spec: 'As Required',                          company: 'As Per Standard',  qty: 'As Required' },
+    { component: 'ACDB / DCDB / MCB Box / Busbar / Panel Box', spec: 'As Required',                       company: 'As Per Standard',  qty: '1 Set'       }
 ];
 
 let globalCount = 0;
@@ -56,11 +56,12 @@ function renderTable() {
 }
 
 function loadDefaults() {
-    const kw = document.getElementById('kw').value || 'X';
+    const kw = document.getElementById('kw').value || '';
     for (let i = 0; i < 11; i++) {
         const d = tableDefaults[i];
         let specStr = d.spec;
-        if(i === 1) specStr = specStr.replace('X', kw);
+        // For inverter row, substitute {{kw}} with the current kW value
+        if (i === 1) specStr = specStr.replace('{{kw}}', kw);
         document.getElementById(`spec_${i + 1}`).value = specStr;
         document.getElementById(`company_${i + 1}`).value = d.company;
         document.getElementById(`qty_${i + 1}`).value = d.qty;
@@ -166,11 +167,15 @@ function buildPayload() {
         payload['Discount_amount'] = formatCurrency(discount);
     }
     
+    // spec_1..11 and company_1..11 all exist in templates
+    // qty_1, qty_2, qty_4 are the only qty placeholders in the templates
     for (let i = 1; i <= 11; i++) {
-        payload[`company_${i}`] = document.getElementById(`company_${i}`).value || '';
-        payload[`qty_${i}`] = document.getElementById(`qty_${i}`).value || '';
         payload[`spec_${i}`] = document.getElementById(`spec_${i}`).value || '';
+        payload[`company_${i}`] = document.getElementById(`company_${i}`).value || '';
     }
+    payload['qty_1'] = document.getElementById('qty_1').value || '';
+    payload['qty_2'] = document.getElementById('qty_2').value || '';
+    payload['qty_4'] = document.getElementById('qty_4').value || '';
     return payload;
 }
 
@@ -302,11 +307,11 @@ function init() {
     // Attach listeners
     document.querySelectorAll('input, textarea').forEach(el => {
         el.addEventListener('input', () => {
-            if(el.id === 'kw' && !localStorage.getItem('gse_quote_state')) {
-                // dynamically update row 2 spec if defaults are untouched
+            if (el.id === 'kw') {
+                // Dynamically update inverter spec if it still looks like the default pattern
                 const spec2 = document.getElementById('spec_2');
-                if(spec2.value.startsWith('Capacity of')) {
-                    spec2.value = `Capacity of ${el.value || 'X'} kW`;
+                if (spec2.value.startsWith('Capacity of')) {
+                    spec2.value = `Capacity of ${el.value} kW`;
                 }
             }
             calculate();

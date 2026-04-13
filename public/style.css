@@ -280,6 +280,124 @@ button {
 }
 
 @media (max-width: 768px) {
-  .split-layout { grid-template-columns: 1fr; }
-  .form-group.row { flex-direction: column; }
+  /* ── Layout ── */
+  body {
+    padding: 0.875rem;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  main {
+    gap: 1rem;
+  }
+
+  /* Cards: reduce padding on small screens */
+  .card {
+    padding: 16px;
+  }
+  .card h2 {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  /* ── Form: single column ── */
+  .split-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Stack all side-by-side form rows */
+  .form-group.row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Stack inner rows (e.g. GST % + GST display) */
+  .inner-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* ── Inputs: full width, touch-friendly height ── */
+  input:not([type="radio"]),
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  textarea {
+    min-height: 80px;
+  }
+
+  /* Spacing between form groups */
+  .form-group {
+    margin-bottom: 0.875rem;
+  }
+
+  /* ── Final amount box ── */
+  .final-box {
+    padding: 1rem;
+  }
+  .final-box input {
+    min-height: 40px;
+  }
+
+  /* ── Materials table: horizontal scroll, no column squeeze ── */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* subtle shadow hint that content is scrollable */
+    box-shadow: inset -6px 0 8px -6px rgba(0,0,0,0.08);
+    border-radius: 8px;
+  }
+  table {
+    min-width: 580px; /* locks column widths; forces scroll on narrow screens */
+  }
+  th,
+  td {
+    white-space: nowrap;
+    padding: 10px 8px;
+  }
+  .row-input {
+    min-height: 44px;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  /* ── Actions bar: stack vertically, buttons full width ── */
+  .actions-bar {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+  .primary-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.625rem;
+  }
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    text-align: center;
+    padding: 14px 16px;
+    border-radius: var(--radius);
+  }
+
+  /* ── Toast: full-width bottom bar on mobile ── */
+  #toast-container {
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+  }
+  .toast {
+    text-align: center;
+  }
 }
+
