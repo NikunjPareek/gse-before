@@ -20,6 +20,13 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR);
 }
 
+const sofficePath = process.env.LIBREOFFICE_PATH;
+
+if (!sofficePath) {
+  console.error('FATAL: LIBREOFFICE_PATH not set in .env');
+  process.exit(1);
+}
+
 // Ensure counter file exists
 if (!fs.existsSync(COUNTER_FILE)) {
   fs.writeFileSync(COUNTER_FILE, JSON.stringify({ count: 1 }));
@@ -138,8 +145,6 @@ app.post('/api/download/pdf', (req, res) => {
     // Save temp docx
     tempDocxPath = path.join(OUTPUT_DIR, `temp_${Date.now()}.docx`);
     fs.writeFileSync(tempDocxPath, docxBuf);
-
-    const sofficePath = process.env.LIBREOFFICE_PATH;
 
     // Convert to PDF using LibreOffice
     const result = spawnSync(

@@ -14,6 +14,21 @@ const tableDefaults = [
 
 let globalCount = 0;
 
+function getFormattedDate() {
+  const inputDate = document.getElementById('date').value;
+
+  let dateObj;
+  if (inputDate) {
+    dateObj = new Date(inputDate); 
+  } else {
+    dateObj = new Date(); 
+  }
+  const dd = String(dateObj.getDate()).padStart(2, '0');
+  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const yy = String(dateObj.getFullYear()).slice(-2);
+
+  return `${dd}${mm}${yy}`;
+}
 function convertNumberToWords(amount) {
     const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
       'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
@@ -106,12 +121,13 @@ function calculate() {
     updateRefNo();
 }
 
-function updateRefNo() {
+function updateRefNo(){ 
     const type = document.querySelector('input[name="type"]:checked').value;
     const kw = document.getElementById('kw').value || '0';
     const padded = globalCount.toString().padStart(4, '0');
     const tStr = type === 'bank' ? 'B' : 'C';
-    document.getElementById('ref_no').value = `GSE/${tStr}/${kw}kW/${padded}`;
+    const dateStr = getFormattedDate(); 
+    document.getElementById('ref_no').value = `GSE/${tStr}/${kw}kW/${dateStr}/${padded}`;
 }
 
 function showToast(msg, type) {
@@ -308,27 +324,33 @@ function init() {
     document.querySelectorAll('input, textarea').forEach(el => {
         el.addEventListener('input', () => {
             if (el.id === 'kw') {
-                // Dynamically update inverter spec if it still looks like the default pattern
                 const spec2 = document.getElementById('spec_2');
                 if (spec2.value.startsWith('Capacity of')) {
                     spec2.value = `Capacity of ${el.value} kW`;
                 }
             }
             calculate();
+            updateRefNo();   
             saveState();
         });
     });
-    
+
+    document.getElementById('date').addEventListener('change', () => {
+        updateRefNo();
+        saveState();
+    });
+
     document.querySelectorAll('input[name="type"]').forEach(el => {
         el.addEventListener('change', () => {
             calculate();
+            updateRefNo();
             saveState();
         });
     });
-    
+
     document.getElementById('btn-doc').addEventListener('click', () => downloadDoc('docx'));
     document.getElementById('btn-pdf').addEventListener('click', () => downloadDoc('pdf'));
-    
+
     document.getElementById('clear-btn').addEventListener('click', () => {
         localStorage.removeItem('gse_quote_state');
         document.querySelectorAll('input:not([type="radio"]), textarea').forEach(el => el.value = '');
@@ -337,7 +359,7 @@ function init() {
         document.getElementById('state_subsidy').value = '18000';
         document.querySelector('input[name="type"][value="bank"]').checked = true;
         loadDefaults();
-        fetchCount(); // get current without increment
+        fetchCount();
         calculate();
     });
 }
