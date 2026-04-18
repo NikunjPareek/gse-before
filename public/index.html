@@ -66,6 +66,9 @@
 
       <div class="card pricing-details">
         <h2>Pricing & Calculations</h2>
+        <input type="hidden" id="central_subsidy" value="78000">
+        <input type="hidden" id="state_subsidy" value="18000">
+        <input type="hidden" id="total_subsidy"> 
         <div class="form-group row">
           <div>
             <label for="base_cost">Base Cost (₹)</label>
@@ -81,21 +84,6 @@
         </div>
         
         <div class="form-group row">
-          <div>
-            <label for="central_subsidy">Central Subsidy (₹)</label>
-            <input type="number" id="central_subsidy" value="78000">
-          </div>
-          <div>
-            <label for="state_subsidy">State Subsidy (₹)</label>
-            <input type="number" id="state_subsidy" value="18000">
-          </div>
-        </div>
-        
-        <div class="form-group row">
-          <div>
-            <label for="total_subsidy">Total Subsidy (₹)</label>
-            <input type="text" id="total_subsidy" readonly>
-          </div>
           <div id="discount-container" style="display: none;">
             <label for="discount_amount">Discount (₹)</label>
             <input type="number" id="discount_amount" placeholder="0">

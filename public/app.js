@@ -1,7 +1,7 @@
 const tableDefaults = [
     { component: 'PV Modules',                              spec: 'BIFICAL',                              company: 'Adani',            qty: '10 No.'      },
     { component: 'Grid-Tie Inverter',                        spec: 'Capacity of {{kw}} kW',                company: 'K-Solar/UTL',      qty: '1 Nos.'      },
-    { component: 'Structure',                                spec: 'GP Paip (Apollo) Galvanized',          company: 'Apollo 2mm',       qty: 'As Required' },
+    { component: 'Structure',                                spec: 'GP Pipe (Apollo) Galvanized',          company: 'Apollo 2mm',       qty: 'As Required' },
     { component: 'Meter',                                    spec: 'Net Meter & Solar',                    company: 'Genius / L & T',   qty: '1 set'       },
     { component: 'DC Wire',                                  spec: '4 mm',                                 company: 'Polycab',          qty: 'As Required' },
     { component: 'AC Wire',                                  spec: 'As Required',                          company: 'Aluminium Armoured',qty: 'As Required' },
@@ -29,6 +29,23 @@ function getFormattedDate() {
 
   return `${dd}${mm}${yy}`;
 }
+
+function getClientShortName() {
+    const name = document.getElementById('client_name').value.trim();
+    if (!name) return 'NA';
+
+    const words = name.split(' ');
+
+    if (words.length === 1) {
+        return words[0].slice(0, 3).toUpperCase();
+    }
+
+    const first = words[0].slice(0, 3);
+    const last = words[words.length - 1].slice(0, 3);
+
+    return (first + last).toUpperCase();
+}
+
 function convertNumberToWords(amount) {
     const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
       'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
@@ -108,7 +125,7 @@ function calculate() {
     const gst_amount = (base_cost * gst_pct) / 100;
     const total_subsidy = central_subsidy + state_subsidy;
     
-    let final_amount = base_cost + gst_amount - total_subsidy;
+    let final_amount = base_cost + gst_amount;
     if (type === 'client') {
         final_amount -= discount;
     }
@@ -127,7 +144,8 @@ function updateRefNo(){
     const padded = globalCount.toString().padStart(4, '0');
     const tStr = type === 'bank' ? 'B' : 'C';
     const dateStr = getFormattedDate(); 
-    document.getElementById('ref_no').value = `GSE/${tStr}/${kw}kW/${dateStr}/${padded}`;
+    const clientShort = getClientShortName();
+    document.getElementById('ref_no').value = `GSE/${tStr}/${kw}kW/${dateStr}/${clientShort}/${padded}`;
 }
 
 function showToast(msg, type) {
@@ -356,7 +374,7 @@ function init() {
         document.querySelectorAll('input:not([type="radio"]), textarea').forEach(el => el.value = '');
         document.getElementById('gst_pct').value = '8.9';
         document.getElementById('central_subsidy').value = '78000';
-        document.getElementById('state_subsidy').value = '18000';
+        document.getElementById('state_subsidy').value = '17000';
         document.querySelector('input[name="type"][value="bank"]').checked = true;
         loadDefaults();
         fetchCount();
