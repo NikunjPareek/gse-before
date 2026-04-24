@@ -60,8 +60,8 @@
         </div>
         <div class="form-group">
           <label for="client_number">Client Number</label>
-          <input type="text" id="client_number" placeholder="Phone number">
-        </div>  
+          <input type="text" id="client_number" placeholder="10-digit phone number" maxlength="10" inputmode="numeric" pattern="[0-9]{10}">
+        </div>
         <div class="form-group">
           <label for="client_address">Client Address</label>
           <textarea id="client_address" rows="3" placeholder="Full address"></textarea>
@@ -98,6 +98,27 @@
           <label>Final Amount</label>
           <input type="text" id="final_amount" readonly>
           <input type="text" id="final_amount_words" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="card vendor-details">
+      <h2>Vendor Details</h2>
+      <div class="form-group row">
+        <div>
+          <label for="vendor_select">Select Vendor</label>
+          <select id="vendor_select">
+            <option value="">-- Select Vendor --</option>
+            <option value="Adani Solar|9876543210">Adani Solar</option>
+            <option value="Tata Power Solar|9988776655">Tata Power Solar</option>
+            <option value="Waaree Energies|9123456789">Waaree Energies</option>
+            <option value="Loom Solar|9001122334">Loom Solar</option>
+            <option value="Luminous Solar|9811223344">Luminous Solar</option>
+          </select>
+        </div>
+        <div>
+          <label for="vendor_phone">Vendor Phone</label>
+          <input type="text" id="vendor_phone" placeholder="Auto-filled on selection" maxlength="10" readonly>
         </div>
       </div>
     </div>
