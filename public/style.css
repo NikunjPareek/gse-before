@@ -412,3 +412,47 @@ button {
   }
 }
 
+/* Loading Overlay */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-box {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 2.5rem 3rem;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  min-width: 260px;
+}
+.loading-box p {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.loading-sub {
+  font-size: 0.85rem !important;
+  font-weight: 400 !important;
+  color: var(--text-muted) !important;
+}
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

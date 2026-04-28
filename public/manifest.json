@@ -3,8 +3,8 @@
   "short_name": "GSE Quote",
   "start_url": "/quotation/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0A0A0A",
+  "background_color": "#4a7c59",
+  "theme_color": "#4a7c59",
   "icons": [
     {
       "src": "icon-192.png",

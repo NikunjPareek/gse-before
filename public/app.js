@@ -302,6 +302,11 @@ async function incrementCount() {
 async function downloadDoc(ext) {
     if(!validateInputs()) return;
     setStatus('loading');
+
+    // Show loading popup
+    const overlay = document.getElementById('loading-overlay');
+    document.getElementById('loading-msg').textContent = ext === 'pdf' ? 'Generating PDF…' : 'Generating DOCX…';
+    overlay.style.display = 'flex';
     
     const type = document.querySelector('input[name="type"]:checked').value;
 
@@ -317,8 +322,13 @@ async function downloadDoc(ext) {
         });
         
         if(!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error || 'Failed to download');
+            let errMsg = `Server error ${res.status}`;
+            try {
+                const rawText = await res.text();
+                console.error('Server raw response:', rawText);
+                try { errMsg = JSON.parse(rawText).error || rawText; } catch(e) { errMsg = rawText; }
+            } catch(e2) {}
+            throw new Error(errMsg);
         }
         
         const clientName = document.getElementById('client_name').value || 'Draft';
@@ -346,6 +356,8 @@ async function downloadDoc(ext) {
         console.error(error);
         setStatus('error');
         showToast(error.message, 'error');
+    } finally {
+        document.getElementById('loading-overlay').style.display = 'none';
     }
 }
 
