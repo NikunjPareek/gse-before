@@ -15,12 +15,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("MongoDB Error:", err));
 
 const app = express();
-const corsOrigin = process.env.CORS_ORIGIN || '*';
-app.use(cors({
-  origin: corsOrigin,
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
-}));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/health', (req, res) => {

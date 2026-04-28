@@ -125,13 +125,13 @@ function calculate() {
     const gst_amount = (base_cost * gst_pct) / 100;
     const total_subsidy = central_subsidy + state_subsidy;
     
-    // Subtract subsidy AND (for client type) discount from final displayed amount
-    let final_amount = base_cost + gst_amount - total_subsidy;
+    let final_amount = base_cost + gst_amount;
     if (type === 'client') {
         final_amount -= discount;
     }
 
     document.getElementById('gst_display').value = formatCurrency(gst_amount);
+    document.getElementById('total_subsidy').value = formatCurrency(total_subsidy);
     document.getElementById('final_amount').value = formatCurrency(final_amount);
     document.getElementById('final_amount_words').value = convertNumberToWords(final_amount);
     
@@ -198,7 +198,7 @@ function buildPayload() {
         gst: formatCurrency(gst),
         kw: document.getElementById('kw').value || '0',
         ref_no: document.getElementById('ref_no').value || '',
-        vendor_name: document.getElementById('vendor_name_hidden').value || '',
+        vendor_name: document.getElementById('vendor_phone').dataset.vendorName || '',
         vendor_phone: document.getElementById('vendor_phone').value || ''
     };
     
@@ -233,7 +233,6 @@ function saveState() {
         discount_amount: document.getElementById('discount_amount').value,
         vendor_select: document.getElementById('vendor_select').value,
         vendor_phone: document.getElementById('vendor_phone').value,
-        vendor_name: document.getElementById('vendor_name_hidden').value,
         table: {}
     };
     for(let i=1; i<=11; i++) {
@@ -265,7 +264,8 @@ function restoreState() {
             if (state.vendor_select) {
                 document.getElementById('vendor_select').value = state.vendor_select;
                 document.getElementById('vendor_phone').value = state.vendor_phone || '';
-                document.getElementById('vendor_name_hidden').value = state.vendor_name || '';
+                const parts = state.vendor_select.split('|');
+                document.getElementById('vendor_phone').dataset.vendorName = parts[0] || '';
             }
             
             for(let i=1; i<=11; i++) {
@@ -389,18 +389,17 @@ function init() {
         saveState();
     });
 
-    // Vendor dropdown → auto-fill phone + store name in hidden input
+    // Vendor dropdown → auto-fill phone
     document.getElementById('vendor_select').addEventListener('change', () => {
         const val = document.getElementById('vendor_select').value;
         const phoneEl = document.getElementById('vendor_phone');
-        const nameEl  = document.getElementById('vendor_name_hidden');
         if (val) {
             const [name, phone] = val.split('|');
             phoneEl.value = phone || '';
-            nameEl.value  = name  || '';
+            phoneEl.dataset.vendorName = name || '';
         } else {
             phoneEl.value = '';
-            nameEl.value  = '';
+            phoneEl.dataset.vendorName = '';
         }
         saveState();
     });
@@ -413,7 +412,7 @@ function init() {
         document.querySelectorAll('input:not([type="radio"]), textarea').forEach(el => el.value = '');
         document.getElementById('vendor_select').value = '';
         document.getElementById('vendor_phone').value = '';
-        document.getElementById('vendor_name_hidden').value = '';
+        document.getElementById('vendor_phone').dataset.vendorName = '';
         document.getElementById('gst_pct').value = '8.9';
         document.getElementById('central_subsidy').value = '78000';
         document.getElementById('state_subsidy').value = '17000';
